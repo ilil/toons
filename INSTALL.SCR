@@ -1,0 +1,91 @@
+clear
+
+rem %1 is destination drive with no :
+rem %2 is installation source drive
+rem %3 is new contents of RESOURCE.CFG
+rem %4 is destination directory
+
+rem echo The install program will now copy 
+rem echo Incredible Toons to your hard drive.
+rem echo Approximate hard drive space required:  2 Meg
+rem echo
+rem echo Do you wish to (C)ontinue or (E)xit?
+rem pick ce Continue Exit
+
+:Continue
+clear
+godir %1:%4 CantCreate
+
+exists %2:RESOURCE.000 Please insert the disk labeled "Disk 1" in drive %2:.
+echo Copying Game files...
+copy %2:*.*
+echo %3 >resource.cfg
+
+echo Processing %2:resource.000 ...
+ren resource.000 unchunk.000 >nul
+unchunk unchunk.000 . >nul
+if ERRORLEVEL 1 goto BadChunk
+del unchunk.000
+rem goto Done
+
+exists %2:RESOURCE.001 Please insert the disk labeled "Disk 2" in drive %2:.
+echo Copying Game files...
+copy %2:resource.001 unchunk.001
+echo Processing %2:resource.001 ...
+unchunk unchunk.001 . >nul
+if ERRORLEVEL 1 goto BadChunk
+del unchunk.001
+
+:Done
+del UNCHUNK.EXE
+
+clear
+echo
+echo ÿTo play NOW:
+echo ÿ   Type TOONS and press [ENTER].
+echo
+echo ÿTo play LATER:
+echo ÿ   Type CD %4 and press [ENTER]
+echo ÿ   Then type TOONS and press [ENTER].
+echo
+pause
+end
+
+:CantCreate
+clear
+echo
+alert Unable to create directory %1:%4
+end
+
+:BadChunk
+if ERRORLEVEL 6 goto ERR6
+if ERRORLEVEL 5 goto ERR5
+if ERRORLEVEL 4 goto ERR4
+if ERRORLEVEL 3 goto ERR3
+if ERRORLEVEL 2 goto ERR2
+if ERRORLEVEL 1 goto ERR1
+alert Unable to extract resource file.  Please run install again.
+end
+
+:ERR1
+alert Unable to read resource file.  Make sure the drive door is shut and run install again.
+end
+:ERR2
+alert Unable to write resource file to hard drive.  This program only installs games on hard drives.  Run install again.  If you get this message again you may have a problem with your hard drive.
+end
+:ERR3
+alert Not enough memory to run extraction program.  The extraction program needs a minimum of 550k to operate.
+end
+:ERR4
+alert The resource file is bad.  Run install again.  If you get this message again, you probably received a bad disk.
+end
+:ERR5
+alert Unable to open the resource file for reading.  A possible solution might be to increase the value of the FILES setting in your CONFIG.SYS file.
+end
+:ERR6
+alert Unable to open the target file for writing.  A possible solution might be to increase the value of the FILES setting in your CONFIG.SYS file.
+end
+
+:exit
+end
+

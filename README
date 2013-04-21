@@ -1,0 +1,13 @@
+
+This file contains last minute updates for Sid & Al's Incredible Toons.
+
+We have discovered that video cards with a TSENG chip set may cause
+the screen to flash when the program is running.  If this
+happens you will need to add the following line to the RESOURCE.CFG
+file in the TOONS directory:
+        VIDEO = YES
+
+This line will instruct the program that the video card is present
+and prevent the screen from flashing.
+
+
